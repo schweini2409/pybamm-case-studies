@@ -126,10 +126,8 @@ install:
   - pip install --upgrade pip
   - pip install .
   - if [[ $STYLE == true ]]; then pip install -e .[dev]; fi;
-  - if [[ $RESULTS == true]]; then 
-    source scripts/install_scikits_odes.sh
-    source scripts/install_sundials_4.1.0.sh
-  fi
+  - if [[ $RESULTS == true]]; then source scripts/install_scikits_odes.sh; fi;
+  - if [[ $RESULTS == true]]; then source scripts/install_sundials_4.1.0.sh; fi;
   - cd ..
 
 before_script:
