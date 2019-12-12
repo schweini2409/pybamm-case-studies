@@ -7,7 +7,7 @@ import numpy as np
 
 # create user-defined function
 def my_fun(t, A, omega):
-    return A * np.sin(2 * np.pi * omega * t)
+    return A * pybamm.sin(2 * np.pi * omega * t)
 
 
 # choose amplitude and frequencies
