@@ -50,13 +50,6 @@ matrix:
           env:
             - RESULTS=true
           if: type != cron
-        # Unit testing on Python3.7 on OS/X
-        - os: osx
-          language: generic
-          env:
-            - PYTHON=3.7.4
-            - RESULTS=true
-          if: type != cron
         # Style
         - python: "3.7"
           addons:
