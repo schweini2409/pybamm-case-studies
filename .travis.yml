@@ -1,0 +1,140 @@
+sudo: false
+
+dist: xenial
+
+language: python
+
+addons:
+  apt:
+    sources:
+    - deadsnakes
+    packages:
+    - gfortran
+    - gcc
+    - libopenblas-dev
+    - liblapack-dev
+    - graphviz
+    - libsuitesparse-dev
+
+matrix:
+    include:
+        # Unit and example testing on all supported Python versions on Ubuntu
+        - python: "3.6"
+          addons:
+            apt:
+              sources:
+                - deadsnakes
+              packages:
+                - gfortran
+                - gcc
+                - libopenblas-dev
+                - liblapack-dev
+                - graphviz
+                - python3.6-dev
+                - libsuitesparse-dev
+          env:
+            - RESULTS=true
+        - python: "3.7"
+          addons:
+            apt:
+              sources:
+                - deadsnakes
+              packages:
+                - gfortran
+                - gcc
+                - libopenblas-dev
+                - liblapack-dev
+                - graphviz
+                - python3.7-dev
+                - libsuitesparse-dev
+          env:
+            - RESULTS=true
+          if: type != cron
+        # Unit testing on Python3.7 on OS/X
+        - os: osx
+          language: generic
+          env:
+            - PYTHON=3.7.4
+            - RESULTS=true
+          if: type != cron
+        # Style
+        - python: "3.7"
+          addons:
+            apt:
+              sources:
+                - deadsnakes
+              packages:
+                - gfortran
+                - gcc
+                - libopenblas-dev
+                - liblapack-dev
+                - graphviz
+                - python3.7-dev
+                - libsuitesparse-dev
+          env:
+            - STYLE=true
+          if: type != cron
+          # Cron jobs
+        - python: "3.7"
+          addons:
+            apt:
+              sources:
+                - deadsnakes
+              packages:
+                - gfortran
+                - gcc
+                - libopenblas-dev
+                - liblapack-dev
+                - graphviz
+                - python3.7-dev
+                - libsuitesparse-dev
+          env:
+            - RESULTS=true
+          if: type == cron
+
+# Install graphviz for macs
+before_install: |
+  # below is reproduced from https://pythonhosted.org/CodeChat/.travis.yml.html
+  if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+    brew update;
+    # Per the `pyenv homebrew recommendations <https://github.com/yyuu/pyenv/wiki#suggested-build-environment>`_.
+    brew install graphviz openssl readline;
+    # See https://docs.travis-ci.com/user/osx-ci-environment/#A-note-on-upgrading-packages.
+    brew outdated pyenv || brew upgrade pyenv
+    # virtualenv doesn't work without pyenv knowledge. venv in Python 3.3
+    # doesn't provide Pip by default. So, use `pyenv-virtualenv <https://github.com/yyuu/pyenv-virtualenv/blob/master/README.md>`_.
+    brew install pyenv-virtualenv
+    pyenv install $PYTHON;
+    # I would expect something like ``pyenv init; pyenv local $PYTHON`` or
+    # ``pyenv shell $PYTHON`` would work, but ``pyenv init`` doesn't seem to
+    # modify the Bash environment. ??? So, I hand-set the variables instead.
+    export PYENV_VERSION=$PYTHON;
+    export PATH="/Users/travis/.pyenv/shims:${PATH}";
+    pyenv virtualenv venv;
+    source venv/bin/activate;
+    # A manual check that the correct version of Python is running.
+    python --version;
+  fi
+
+# Install dependencies
+# Note: Use pip (not apt-get) for Python dependencies
+# Note: Only install normal dependencies for unit tests; these should be tested
+#       without the packages from -dev and -doc!
+install:
+  - pip install --upgrade pip
+  - pip install .
+  - if [[ $STYLE == true ]]; then pip install -e .[dev]; fi;
+  - source scripts/install_scikits_odes.sh
+  - source scripts/install_sundials_4.1.0.sh
+
+before_script:
+- python --version
+
+# Note that default timeout is 10 minutes
+# This can be changed with travis_wait, but that leads to
+# issues with debug output:
+# https://github.com/travis-ci/travis-ci/issues/5716
+script:
+  - if [[ $RESULTS == true ]]; then python run-tests.py --results; fi;
+  - if [[ $STYLE == true ]]; then python -m flake8; fi;
+
