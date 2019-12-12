@@ -19,7 +19,7 @@ param.process_geometry(geometry)
 
 # set mesh
 var = pybamm.standard_spatial_vars
-var_pts = {var.x_n: 10, var.x_s: 10, var.x_p: 10, var.r_n: 5, var.r_p: 5}
+var_pts = {var.x_n: 11, var.x_s: 11, var.x_p: 11, var.r_n: 5, var.r_p: 5}
 mesh = pybamm.Mesh(geometry, model.default_submesh_types, var_pts)
 
 # discretise model
