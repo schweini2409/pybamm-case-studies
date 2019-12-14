@@ -23,10 +23,7 @@ If you want to create the repository once and then forget about it, you can spec
 1. Either:
 
     - Set up Travis-CI to run [CRON jobs](https://docs.travis-ci.com/user/cron-jobs/) to be notified if your repository stops working with the latest version of PyBaMM
-    
-or:
-
-    - Specify (in your README) the PyBaMM version number or commit hash with which your repository works
+    - **or:** Specify (in your README) the PyBaMM version number or commit hash with which your repository works
 
 ## Repositories that use PyBaMM
 
