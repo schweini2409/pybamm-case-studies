@@ -52,7 +52,7 @@ solutions = [None] * len(frequencies)
 labels = [None] * len(frequencies)
 for i, frequency in enumerate(frequencies):
     # need enough timesteps to resolve output
-    npts = 50 * simulation_time * frequency
+    npts = int(50 * simulation_time * frequency)
     t_eval = np.linspace(0, simulation_time / tau, npts)
     solutions[i] = model.default_solver.solve(models[i], t_eval)
     labels[i] = "Frequency: {} Hz".format(frequency)
