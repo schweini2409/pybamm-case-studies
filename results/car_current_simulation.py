@@ -40,7 +40,7 @@ geometry = model.default_geometry
 
 # load parameter values and process model and geometry
 param = model.default_parameter_values
-param["Current function"] = car_current
+param["Current function [A]"] = car_current
 param.process_model(model)
 param.process_geometry(geometry)
 
@@ -59,5 +59,5 @@ t_eval = np.linspace(0, 1800 / tau, 600)
 solution = model.default_solver.solve(model, t_eval)
 
 # plot
-plot = pybamm.QuickPlot(model, mesh, solution)
+plot = pybamm.QuickPlot(solution)
 plot.dynamic_plot()

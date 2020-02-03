@@ -27,7 +27,7 @@ for i, frequency in enumerate(frequencies):
     def current(t):
         return my_fun(t, A, frequency)
 
-    param.update({"Current function": current})
+    param.update({"Current function [A]": current})
     param.process_model(models[i])
 
 # discretise models
@@ -52,12 +52,12 @@ solutions = [None] * len(frequencies)
 labels = [None] * len(frequencies)
 for i, frequency in enumerate(frequencies):
     # need enough timesteps to resolve output
-    npts = 20 * simulation_time * frequency
+    npts = 50 * simulation_time * frequency
     t_eval = np.linspace(0, simulation_time / tau, npts)
-    solutions[i] = model.default_solver.solve(model, t_eval)
+    solutions[i] = model.default_solver.solve(models[i], t_eval)
     labels[i] = "Frequency: {} Hz".format(frequency)
 
 # plot
 output_variables = ["Current [A]", "Terminal voltage [V]"]
-plot = pybamm.QuickPlot(models, mesh, solutions, output_variables, labels)
+plot = pybamm.QuickPlot(solutions, output_variables, labels)
 plot.dynamic_plot()
