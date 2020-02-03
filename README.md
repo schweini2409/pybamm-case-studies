@@ -12,7 +12,9 @@ This repository provides a template for generating results (for example, for a p
 source path/to/pybamm/env/bin/activate
 ```
 
-If you want to create the repository once and then forget about it, you can specify a particular PyBaMM version number or commit hash that the repository works with. Alternatively, you can set up Travis-CI to notify you if any changes to PyBaMM cause your repository to break, to make sure that your repository stays up to date with the latest improvements in PyBaMM
+If you want to create the repository once and then forget about it, you can specify a particular PyBaMM version number or commit hash that the repository works with. For example, this repository currently works with PyBaMM commit `d1344e303dfdaf3cb28f4aaf97410f65463`.
+
+Alternatively, you can set up Travis-CI to notify you if any changes to PyBaMM cause your repository to break, to make sure that your repository stays up to date with the latest improvements in PyBaMM. 
 
 ## Making your own repository
 

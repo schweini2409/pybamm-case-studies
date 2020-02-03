@@ -116,6 +116,7 @@ before_install: |
 install:
   - git clone https://github.com/pybamm-team/PyBaMM.git
   - cd PyBaMM
+  - git checkout d1344e303dfdaf3cb28f4aaf97410f65463
   - pip install --upgrade pip
   - pip install -e .
   - if [[ $STYLE == true ]]; then pip install -e .[dev]; fi;
