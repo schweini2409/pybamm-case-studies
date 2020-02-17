@@ -6,7 +6,7 @@ import numpy as np
 
 # load model
 pybamm.set_logging_level("INFO")
-model = pybamm.lithium_ion.SPMe()
+model = pybamm.lithium_ion.DFN()
 
 # create geometry
 geometry = model.default_geometry
@@ -19,7 +19,7 @@ param.process_geometry(geometry)
 
 # set mesh
 var = pybamm.standard_spatial_vars
-var_pts = {var.x_n: 11, var.x_s: 11, var.x_p: 11, var.r_n: 5, var.r_p: 5}
+var_pts = {var.x_n: 20, var.x_s: 20, var.x_p: 20, var.r_n: 10, var.r_p: 10}
 mesh = pybamm.Mesh(geometry, model.default_submesh_types, var_pts)
 
 # discretise model
@@ -31,9 +31,8 @@ tau = param.evaluate(pybamm.standard_parameters_lithium_ion.tau_discharge)
 t_eval = np.linspace(0, 600 / tau, 600)
 
 # need to increase max solver steps if solving DAEs along with an erratic drive cycle
-solver = pybamm.CasadiSolver()
-if isinstance(solver, pybamm.DaeSolver):
-    solver.max_steps = 10000
+solver = pybamm.CasadiSolver(mode="fast")
+solver.max_steps = 10000
 
 solution = solver.solve(model, t_eval)
 

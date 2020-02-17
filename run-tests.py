@@ -48,8 +48,8 @@ def run_notebook_and_scripts(skip_slow_books=False, executable="python"):
                 line = line.strip()
                 if not line or line[:1] == "#":
                     continue
-                if not line.startswith("results/"):
-                    line = "results/" + line
+                if not line.startswith("src/"):
+                    line = "src/" + line
                 if not line.endswith(".ipynb"):
                     line = line + ".ipynb"
                 if not os.path.isfile(line):
@@ -58,7 +58,7 @@ def run_notebook_and_scripts(skip_slow_books=False, executable="python"):
 
     # Scan and run
     print("Testing notebooks and scripts with executable `" + str(executable) + "`")
-    if not scan_for_nb_and_scripts("results", True, executable, ignore_list):
+    if not scan_for_nb_and_scripts("src", True, executable, ignore_list):
         print("\nErrors encountered in notebooks")
         sys.exit(1)
     print("\nOK")
@@ -227,9 +227,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run tests for repository.",)
     # Notebook tests
     parser.add_argument(
-        "--results",
+        "--src",
         action="store_true",
-        help="Test all Jupyter notebooks and scripts in `results`.",
+        help="Test all Jupyter notebooks and scripts in `src`.",
     )
     parser.add_argument(
         "-debook",
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     )
     # Combined test sets
     parser.add_argument(
-        "--quick", action="store_true", help="Run quick checks (results, flake8)",
+        "--quick", action="store_true", help="Run quick checks (src, flake8)",
     )
 
     # Parse!
@@ -256,7 +256,7 @@ if __name__ == "__main__":
         has_run = True
         run_flake8()
     # Notebook tests
-    elif args.results:
+    elif args.src:
         has_run = True
         run_notebook_and_scripts()
     if args.debook:

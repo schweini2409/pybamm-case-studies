@@ -14,6 +14,7 @@ geometry = model.default_geometry
 
 # load parameter values and process model and geometry
 param = model.default_parameter_values
+param["Current function [A]"] = "[input]"
 param.process_model(model)
 param.process_geometry(geometry)
 
@@ -28,7 +29,9 @@ disc.process_model(model)
 tau = param.process_symbol(pybamm.standard_parameters_lithium_ion.tau_discharge)
 t_end = 3600 / tau.evaluate(0)
 t_eval1 = np.linspace(0, t_end, 120)
-solution1 = model.default_solver.solve(model, t_eval1)
+solution1 = model.default_solver.solve(
+    model, t_eval1, inputs={"Current function [A]": 1}
+)
 
 # process variables for later plotting
 time1 = solution1["Time [h]"]
@@ -36,9 +39,6 @@ voltage1 = solution1["Terminal voltage [V]"]
 current1 = solution1["Current [A]"]
 
 # solve again with zero current, using last step of solution1 as initial conditions
-# update the current to be zero
-param["Current function [A]"] = 0
-param.update_model(model, disc)
 # Note: need to update model.concatenated_initial_conditions *after* update_model,
 # as update_model updates model.concatenated_initial_conditions, by concatenting
 # the (unmodified) initial conditions for each variable
@@ -48,7 +48,9 @@ model.concatenated_initial_conditions = solution1.y[:, -1][:, np.newaxis]
 t_start = solution1.t[-1]
 t_end = t_start + 3600 / tau.evaluate(0)
 t_eval2 = np.linspace(t_start, t_end, 120)
-solution2 = model.default_solver.solve(model, t_eval2)
+solution2 = model.default_solver.solve(
+    model, t_eval2, inputs={"Current function [A]": 0}
+)
 
 # process variables for later plotting
 time2 = solution2["Time [h]"]
