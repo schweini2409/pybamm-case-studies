@@ -43,9 +43,6 @@ for model in models:
 
 # Example: simulate for 30 seconds
 simulation_time = 30  # end time in seconds
-tau = param.process_symbol(
-    pybamm.standard_parameters_lithium_ion.tau_discharge
-).evaluate(0)
 
 # loop over frequencies
 solutions = [None] * len(frequencies)
@@ -53,7 +50,7 @@ labels = [None] * len(frequencies)
 for i, frequency in enumerate(frequencies):
     # need enough timesteps to resolve output
     npts = int(50 * simulation_time * frequency)
-    t_eval = np.linspace(0, simulation_time / tau, npts)
+    t_eval = np.linspace(0, simulation_time, npts)
     solutions[i] = model.default_solver.solve(models[i], t_eval)
     labels[i] = "Frequency: {} Hz".format(frequency)
 

@@ -17,15 +17,10 @@ geometry = model.default_geometry
 # load parameter values and process model and geometry
 param = model.default_parameter_values
 
-
-def electrolyte_conductivity(c_e, T, T_inf, E_k_e, R_g):
-    return pybamm.InputParameter("Conductivity")
-
-
 param.update(
     {
         "Cation transference number": "[input]",
-        "Electrolyte conductivity [S.m-1]": electrolyte_conductivity,
+        "Electrolyte conductivity [S.m-1]": "[input]",
     }
 )
 param.process_model(model)
@@ -41,7 +36,7 @@ disc = pybamm.Discretisation(mesh, model.default_spatial_methods)
 disc.process_model(model)
 
 # solve model
-t_eval = np.linspace(0, 0.15, 100)
+t_eval = np.linspace(0, 3300, 100)
 solver = pybamm.CasadiSolver(mode="fast")
 solver.rtol = 1e-3
 solver.atol = 1e-6
@@ -53,7 +48,9 @@ def objective(solution):
 
 # Generate synthetic data, with noise
 true_solution = solver.solve(
-    model, t_eval, inputs={"Cation transference number": 0.4, "Conductivity": 0.3}
+    model,
+    t_eval,
+    inputs={"Cation transference number": 0.4, "Electrolyte conductivity [S.m-1]": 0.3},
 )
 data = objective(true_solution)
 # add random normal noise
@@ -68,7 +65,10 @@ def prediction_error(x):
         solution = solver.solve(
             model,
             t_eval,
-            inputs={"Cation transference number": x[0], "Conductivity": x[1]},
+            inputs={
+                "Cation transference number": x[0],
+                "Electrolyte conductivity [S.m-1]": x[1],
+            },
         )
     except pybamm.SolverError:
         return 1e5 * np.ones_like(data_plus_noise)
@@ -88,12 +88,20 @@ soln = dfols.solve(prediction_error, x0)  # , bounds=(np.array([0]), None))
 found_solution = solver.solve(
     model,
     t_eval,
-    inputs={"Cation transference number": soln.x[0], "Conductivity": soln.x[1]},
+    inputs={
+        "Cation transference number": soln.x[0],
+        "Electrolyte conductivity [S.m-1]": soln.x[1],
+    },
 )
 
 # Generate initial guess, for plotting
 init_solution = solver.solve(
-    model, t_eval, inputs={"Cation transference number": x0[0], "Conductivity": x0[1]}
+    model,
+    t_eval,
+    inputs={
+        "Cation transference number": x0[0],
+        "Electrolyte conductivity [S.m-1]": x0[1],
+    },
 )
 
 # Plot

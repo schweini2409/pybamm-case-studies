@@ -33,7 +33,7 @@ def car_current(t):
 
 # load model
 pybamm.set_logging_level("INFO")
-model = pybamm.lithium_ion.SPMe()
+model = pybamm.lithium_ion.DFN()
 
 # create geometry
 geometry = model.default_geometry
@@ -52,11 +52,8 @@ disc = pybamm.Discretisation(mesh, model.default_spatial_methods)
 disc.process_model(model)
 
 # simulate car current for 30 minutes
-tau = param.process_symbol(
-    pybamm.standard_parameters_lithium_ion.tau_discharge
-).evaluate(0)
-t_eval = np.linspace(0, 1800 / tau, 600)
-solution = model.default_solver.solve(model, t_eval)
+t_eval = np.linspace(0, 1800, 600)
+solution = pybamm.CasadiSolver(mode="fast").solve(model, t_eval)
 
 # plot
 plot = pybamm.QuickPlot(solution)

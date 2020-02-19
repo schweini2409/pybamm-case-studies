@@ -43,7 +43,7 @@ for i, model in enumerate(models):
 solutions = [None] * len(models)
 voltages = [None] * len(models)
 voltage_rmse = [None] * len(models)
-t_eval = np.linspace(0, 0.17, 100)
+t_eval = np.linspace(0, 3600, 100)
 for i, model in enumerate(models):
     solutions[i] = pybamm.CasadiSolver(mode="fast").solve(model, t_eval)
     voltages[i] = solutions[i]["Terminal voltage [V]"](solutions[i].t)

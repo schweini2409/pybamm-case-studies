@@ -27,8 +27,7 @@ disc = pybamm.Discretisation(mesh, model.default_spatial_methods)
 disc.process_model(model)
 
 # simulate US06 drive cycle
-tau = param.evaluate(pybamm.standard_parameters_lithium_ion.tau_discharge)
-t_eval = np.linspace(0, 600 / tau, 600)
+t_eval = np.linspace(0, 600, 600)
 
 # need to increase max solver steps if solving DAEs along with an erratic drive cycle
 solver = pybamm.CasadiSolver(mode="fast")

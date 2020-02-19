@@ -26,8 +26,7 @@ disc = pybamm.Discretisation(mesh, model.default_spatial_methods)
 disc.process_model(model)
 
 # solve model during discharge stage (1 hour)
-tau = param.process_symbol(pybamm.standard_parameters_lithium_ion.tau_discharge)
-t_end = 3600 / tau.evaluate(0)
+t_end = 3600
 t_eval1 = np.linspace(0, t_end, 120)
 solution1 = model.default_solver.solve(
     model, t_eval1, inputs={"Current function [A]": 1}
@@ -42,11 +41,11 @@ current1 = solution1["Current [A]"]
 # Note: need to update model.concatenated_initial_conditions *after* update_model,
 # as update_model updates model.concatenated_initial_conditions, by concatenting
 # the (unmodified) initial conditions for each variable
-model.concatenated_initial_conditions = solution1.y[:, -1][:, np.newaxis]
+model.concatenated_initial_conditions = pybamm.Vector(solution1.y[:, -1][:, np.newaxis])
 
 # simulate 1 hour of rest
-t_start = solution1.t[-1]
-t_end = t_start + 3600 / tau.evaluate(0)
+t_start = solution1["Time [s]"].entries[-1]
+t_end = t_start + 3600
 t_eval2 = np.linspace(t_start, t_end, 120)
 solution2 = model.default_solver.solve(
     model, t_eval2, inputs={"Current function [A]": 0}
@@ -59,12 +58,11 @@ current2 = solution2["Current [A]"]
 
 # plot
 plt.subplot(121)
-plt.plot(time1(t_eval1), voltage1(t_eval1), time2(t_eval2), voltage2(t_eval2))
+plt.plot(time1.entries, voltage1.entries, time2.entries, voltage2.entries)
 plt.xlabel("Time [h]")
 plt.ylabel("Voltage [V]")
 plt.subplot(122)
-z = np.linspace(0, 1, 10)
-plt.plot(time1(t_eval1), current1(t_eval1), time2(t_eval2), current2(t_eval2))
+plt.plot(time1.entries, current1.entries, time2.entries, current2.entries)
 plt.xlabel("Time [h]")
 plt.ylabel("Current [A]")
 
