@@ -122,6 +122,8 @@ install:
   # In order to download SUNDIALS and SuiteSparse
   - pip install wget
   - pip install -e .
+  # DFO-LS for the parameter estimation example
+  - pip install DFO-LS
   - if [[ $STYLE == true ]]; then pip install -e .[dev]; fi;
   - |
     if [[ $RESULTS == true ]]; then
