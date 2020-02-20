@@ -118,10 +118,27 @@ install:
   - cd PyBaMM
   - git checkout 53fa5f55e20735dc2e
   - pip install --upgrade pip
-  - pip install -e .
+  - pip install --upgrade pip
+  # In order to download SUNDIALS and SuiteSparse
+  - pip install wget
+  - pip install .
   - if [[ $STYLE == true ]]; then pip install -e .[dev]; fi;
-  - if [[ $RESULTS == true ]]; then source scripts/install_scikits_odes.sh; fi;
-  - if [[ $RESULTS == true ]]; then source scripts/install_sundials_4.1.0.sh; fi;
+  - |
+    if [[ $RESULTS == true ]]; then
+      python setup.py install_odes -f;
+      export LD_LIBRARY_PATH=sundials/lib:$LD_LIBRARY_PATH
+    fi;
+  - |
+    if [[ $RESULTS == true ]]; then
+      mkdir -p third-party;
+      cd third-party;
+      rm -rf pybind11;
+      git clone https://github.com/pybind/pybind11.git;
+      cd ../;
+      python setup.py install_klu -f;
+      export LD_LIBRARY_PATH=sundials/lib:$LD_LIBRARY_PATH
+      export LD_LIBRARY_PATH=SuiteSparse-5.6.0/lib:$LD_LIBRARY_PATH
+    fi;
   - cd ..
 
 before_script:
