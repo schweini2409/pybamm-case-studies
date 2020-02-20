@@ -121,7 +121,7 @@ install:
   - pip install --upgrade pip
   # In order to download SUNDIALS and SuiteSparse
   - pip install wget
-  - pip install .
+  - pip install -e .
   - if [[ $STYLE == true ]]; then pip install -e .[dev]; fi;
   - |
     if [[ $RESULTS == true ]]; then

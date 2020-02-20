@@ -1,6 +1,6 @@
 # PyBaMM results
 
-[![Build Status](https://travis-ci.com/pybamm-team/cookie-cutter-results.svg?branch=master)](https://travis-ci.com/pybamm-team/cookie-cutter-results)
+[![Build Status](https://travis-ci.com/pybamm-team/pybamm-case-studies.svg?branch=master)](https://travis-ci.com/pybamm-team/pybamm-case-studies)
 
 This repository provides a template for generating results (for example, for a paper) using [PyBaMM](https://github.com/pybamm-team/PyBaMM)
 
