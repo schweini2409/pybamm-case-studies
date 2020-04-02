@@ -29,7 +29,10 @@ voltage_rmse = [None] * len(tols)
 labels = [None] * len(tols)
 t_eval = np.linspace(0, 3000, 100)
 for i, tol in enumerate(tols):
-    solver = pybamm.IDAKLUSolver(rtol=tol[0], atol=tol[1])
+    if pybamm.have_idaklu():
+        solver = pybamm.IDAKLUSolver(rtol=tol[0], atol=tol[1])
+    else:
+        solver = pybamm.CasadiSolver(rtol=tol[0], atol=tol[1])
     solutions[i] = solver.solve(model, t_eval)
     voltages[i] = solutions[i]["Terminal voltage [V]"](solutions[i].t)
     voltage_rmse[i] = pybamm.rmse(voltages[0], voltages[i])

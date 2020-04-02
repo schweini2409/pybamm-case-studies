@@ -1,0 +1,2 @@
+pybamm==0.2.1
+DFO-LS
